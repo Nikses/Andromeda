@@ -1,12 +1,12 @@
 # functions to scrape the website for the latest bill
 import requests
 from bs4 import BeautifulSoup
-from docx import Document
 
 
 url = 'https://www.govtrack.us/congress/bills/browse?status=passed#sort=-introduced_date&current_status[]=28'
 
-def scrape_bill_text_save_docx():
+
+def scrape_bill_text_save_txt():
     url = "https://www.govtrack.us/congress/bills/118/hr7888/text"
     response = requests.get(url)
     if response.status_code != 200:
@@ -14,19 +14,18 @@ def scrape_bill_text_save_docx():
         return
 
     soup = BeautifulSoup(response.text, 'html.parser')
-    bill_text_container = soup.find_all('p')  # Assuming the bill text is in <p> tags, adjust as necessary
+    bill_text_container = soup.find_all('p')  # Assuming the bill text is in <p> tags
 
-    # Create a new Document
-    doc = Document()
-    start_saving = False  # Flag to start saving text
-    for paragraph in bill_text_container:
-        text = paragraph.get_text()
-        if "The text of the bill below" in text:
-            start_saving = True  # Update the flag to start saving text
-        if start_saving:
-            doc.add_paragraph(text)  # Add paragraph to the document only after the starting point
+    with open('test1.txt', 'w') as file:
+        start_saving = False  # Flag to not save text unless it starts with "The text of the bill below"
+        for paragraph in bill_text_container:
+            text = paragraph.get_text()
+            if "The text of the bill below" in text:
+                start_saving = True  # Update the flag to start saving text
+            elif "Vice President of the United States and President of the Senate." in text:
+                start_saving = False  # Update the flag to stop saving text after bill finished
+            if start_saving:
+                file.write(text + '\n')
 
-    # Save the document to the specified path on your Google Drive
-    doc.save('/content/drive/MyDrive/case_study/Legalfin.docx')  # Adjust path as needed
 
-scrape_bill_text_save_docx()
+scrape_bill_text_save_txt()
