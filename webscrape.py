@@ -1,7 +1,37 @@
 # functions to scrape the website for the latest bill
-import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
+import requests
+import time
+
+
+def scrape_for_updates():
+    service = Service(executable_path=ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service)
+
+    url = 'https://www.govtrack.us/congress/bills/browse?status=passed#sort=-introduced_date&current_status[]=28'
+    driver.get(url)
+    response = requests.get(url)
+    if response.status_code != 200:
+        print("Failed to retrieve the page")
+        return []
+
+    time.sleep(2)  # Wait for 2 seconds to load the page
+    html = driver.page_source
+    soup = BeautifulSoup(html, 'html.parser')
+
+    # Select the latest bill
+    rows = soup.find_all('div', class_='row')
+    row = str(rows[3].find('a'))
+
+    # Splitting to get the url and the title part
+    href = row.split('href="')[1].split('"')[0]
+    title = row.split('title="')[1].split('"')[0]
+
+    return title, href
 
 url = 'https://www.govtrack.us/congress/bills/browse?status=passed#sort=-introduced_date&current_status[]=28'
 
