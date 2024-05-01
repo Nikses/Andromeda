@@ -14,7 +14,7 @@ config_list = [
 ]
 
 llm_config = {
-    'request_timeout': 120,
+    'timeout': 120,
     'seed': 43,
     'config_list': config_list,
     'temperature': 0.9,
@@ -28,7 +28,7 @@ Explainer = autogen.AssistantAgent(
                    "is to analyze and summarize the bill in simple terms. Provide a brief overview of the key "
                    "provisions of the bill, and explain their potential real-life implications for the general public. "
                    "Focus on making your explanation accessible and relatable, using layman's terms and concrete "
-                   "examples where possible.",
+                   "examples where possible. Add corresponding emojis in the beginning of each paragraph. ",
 )
 
 
@@ -36,6 +36,8 @@ def readfile(filename):
     with open(filename, 'r') as file:
         title = file.readline()
         content = file.read()
+
+    file.close()
 
     task = f'''Topic is: {title}'''
 
@@ -47,20 +49,25 @@ def explain(filename):
     user_proxy = autogen.UserProxyAgent(
         name='user_proxy',
         human_input_mode='ALWAYS',
-        system_message=''' ''',
+        system_message='''Say TERMINATE once finished. ''',
         is_termination_msg=lambda x: x.get('content', '').rstrip().endswith('TERMINATE'),
-        code_execution_config={'workdir': 'web'},
+        code_execution_config={'use_docker': False},
         llm_config=llm_config,
     )
 
-    user_proxy.initiate_chat(
+    chat_result = user_proxy.initiate_chat(
         Explainer,
         message=task,
     )
 
+    with open('explained_logs/' + filename[13:-4] + '.txt', 'w') as file:
+        file.write(str(chat_result))
+
+    file.close()
+
 
 def main():
-    file = 'summary.txt'
+    file = 'scraped_logs/7888.txt'
     explain(filename=file)
 
 
