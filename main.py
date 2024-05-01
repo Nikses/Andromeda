@@ -1,4 +1,4 @@
-#main function for the program, import the required modules from other files
+#  This is the main function for the program, import the required modules from other files
 from webscrape import scrape_for_updates, scrape_bill_text_save_txt
 from agent import explain
 
@@ -9,20 +9,26 @@ def prepend_line(file_name, line_to_prepend):
     with open(file_name, 'r', encoding='latin-1') as file:
         content = file.readlines()
 
+    file.close()
+
     # Open the file in write mode and write the new line at the top with the original content below
     with open(file_name, 'w', encoding='latin-1') as file:
         file.write(line_to_prepend + '\n')
         file.writelines(content)
+
+    file.close()
 
 
 def check_logs():
     """Check if there is a bill that we did not do before"""
     with open('logs', 'r', encoding='latin-1') as file:
         last_title = file.readline()
+        clean_line = last_title.strip()
+
+    file.close()
 
     title, url = scrape_for_updates()
-    if last_title == title:
-        print(1)
+    if clean_line == title:
         return False
     else:
         return [title, url]
