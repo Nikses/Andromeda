@@ -33,6 +33,7 @@ Explainer = autogen.AssistantAgent(
 
 
 def readfile(filename):
+    """Read the file and get it's content and title"""
     with open(filename, 'r') as file:
         title = file.readline()
         content = file.read()
@@ -45,6 +46,7 @@ def readfile(filename):
 
 
 def explain(filename):
+    """Use the agent to explain and write in new file"""
     content, task = readfile(filename)
     user_proxy = autogen.UserProxyAgent(
         name='user_proxy',
@@ -64,12 +66,3 @@ def explain(filename):
         file.write(str(chat_result))
 
     file.close()
-
-
-def main():
-    file = 'scraped_logs/7888.txt'
-    explain(filename=file)
-
-
-if __name__ == '__main__':
-    main()
