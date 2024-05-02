@@ -29,7 +29,7 @@ Andromeda automates the retrieval and summarization of the latest passed bills f
 
 ## Getting Started 🚀
 
-To get started with Andromeda, clone this repository to your local machine:
+To get started with Andromeda, clone this repository to your local machine and then run main.py or the .ipynb notebook:
 
 ```bash
-git clone https://github.com/yourusername/Andromeda.git
+git clone https://github.com/Nikses/Andromeda.git
