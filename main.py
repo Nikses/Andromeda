@@ -1,22 +1,6 @@
 #  This is the main function for the program, import the required modules from other files
-from webscrape import scrape_for_updates, scrape_bill_text_save_txt
+from webscrape import scrape_for_updates, scrape_bill_text_save_txt, prepend_line
 from agent import explain
-
-
-def prepend_line(file_name, line_to_prepend):
-    """ Prepend a line to the beginning of a file. """
-    # Read the existing content from the file
-    with open(file_name, 'r', encoding='latin-1') as file:
-        content = file.readlines()
-
-    file.close()
-
-    # Open the file in write mode and write the new line at the top with the original content below
-    with open(file_name, 'w', encoding='latin-1') as file:
-        file.write(line_to_prepend + '\n')
-        file.writelines(content)
-
-    file.close()
 
 
 def check_logs():

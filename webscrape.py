@@ -8,6 +8,22 @@ import requests
 import time
 
 
+def prepend_line(file_name, line_to_prepend):
+    """ Prepend a line to the beginning of a file. """
+    # Read the existing content from the file
+    with open(file_name, 'r', encoding='latin-1') as file:
+        content = file.readlines()
+
+    file.close()
+
+    # Open the file in write mode and write the new line at the top with the original content below
+    with open(file_name, 'w', encoding='latin-1') as file:
+        file.write(line_to_prepend + '\n')
+        file.writelines(content)
+
+    file.close()
+
+
 def scrape_for_updates():
     service = Service(executable_path=ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service)
